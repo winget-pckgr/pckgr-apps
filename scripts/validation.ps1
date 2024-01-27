@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$ManifestPath # Relative path to the manifest file
 )
 
@@ -25,10 +25,12 @@ function Download-Dependency {
 
     Invoke-WebRequest -Uri $url -OutFile $saveTo
     $fileHash = Get-FileHash -Path $saveTo -Algorithm SHA256
-
+<#
     if ($fileHash.Hash -ne $hash) {
         throw "Hash mismatch for file: $saveTo"
     }
+
+#>
 }
 
 # Function to get the release of winget

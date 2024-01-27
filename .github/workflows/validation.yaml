@@ -10,16 +10,23 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # Fetches all history for all branches and tags
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetches all history for all branches and tags
 
-    - name: Run winget test script
-      shell: pwsh
-      run: |
-        git fetch origin master:master
-        $modifiedManifests = git diff --name-only master...HEAD -- 'manifests/**/*.yaml'
-        foreach ($manifest in $modifiedManifests) {
-            .\scripts\validation.ps1 -ManifestPath $manifest
-        }
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+
+      - name: Run winget validation
+        shell: pwsh
+        run: |
+          git fetch origin master:master
+          $modifiedManifests = git diff --name-only master...HEAD -- 'manifests/**/*.yaml'
+          foreach ($manifest in $modifiedManifests) {
+              # Extract the top-level directory from the manifest path
+              $directoryPath = Split-Path -Path $manifest -Parent
+
+              # Run winget install command with the directory path
+              winget install -m "$directoryPath" --silent
+          }

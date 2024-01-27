@@ -1,0 +1,24 @@
+name: Winget PR Test
+
+on:
+  pull_request:
+    paths:
+      - 'manifests/**'
+
+jobs:
+  test-winget-install:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PowerShell
+      uses: actions/setup-powershell@v1
+
+    - name: Run winget test script
+      run: |
+        $modifiedManifests = git diff --name-only origin/main...HEAD -- 'manifests/**/*.yaml'
+        foreach ($manifest in $modifiedManifests) {
+            .\scripts\validation.ps1 -ManifestPath $manifest
+        }

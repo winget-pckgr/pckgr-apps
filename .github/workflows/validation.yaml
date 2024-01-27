@@ -18,5 +18,5 @@ jobs:
       run: |
         $modifiedManifests = git diff --name-only origin/master...HEAD -- 'manifests/**/*.yaml'
         foreach ($manifest in $modifiedManifests) {
-            .\path\to\your\script.ps1 -ManifestPath $manifest
+            .\scripts\validation.ps1 -ManifestPath $manifest
         }

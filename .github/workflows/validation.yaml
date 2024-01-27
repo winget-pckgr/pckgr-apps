@@ -13,12 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up PowerShell
-      uses: actions/setup-powershell@v1
-
     - name: Run winget test script
+      shell: pwsh
       run: |
-        $modifiedManifests = git diff --name-only origin/main...HEAD -- 'manifests/**/*.yaml'
+        $modifiedManifests = git diff --name-only origin/master...HEAD -- 'manifests/**/*.yaml'
         foreach ($manifest in $modifiedManifests) {
-            .\scripts\validation.ps1 -ManifestPath $manifest
+            .\path\to\your\script.ps1 -ManifestPath $manifest
         }

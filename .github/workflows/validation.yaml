@@ -12,11 +12,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # Fetches all history for all branches and tags
 
     - name: Run winget test script
       shell: pwsh
       run: |
-        $modifiedManifests = git diff --name-only origin/master...HEAD -- 'manifests/**/*.yaml'
+        git fetch origin master:master
+        $modifiedManifests = git diff --name-only master...HEAD -- 'manifests/**/*.yaml'
         foreach ($manifest in $modifiedManifests) {
             .\scripts\validation.ps1 -ManifestPath $manifest
         }
